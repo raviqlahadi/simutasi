@@ -1,0 +1,8 @@
+.search-toogle {    
+    cursor: pointer;
+    color: #3c4b64;
+}
+
+.search-toogle:hover{
+    color: #321fdb; 
+}
