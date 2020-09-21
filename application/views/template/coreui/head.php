@@ -19,7 +19,7 @@
 <link href="<?php echo base_url() .  FONTAWESOME_PATH  ?>css/all.min.css" rel="stylesheet">
 
 <!-- Costum Style -->
-<link rel="stylesheet" href="<?php echo base_url() . '/assets/css/style.css'; ?>" />
+<link rel="stylesheet" href="<?php echo base_url() . 'assets/css/style.css'; ?>" />
 <?php
 if (isset($view_library) && array_search('datatable', $view_library) !== false) {
 ?>
@@ -31,5 +31,10 @@ if (isset($view_library) && array_search('datatable', $view_library) !== false) 
 <?php
 if (isset($view_library) && array_search('ckeditor', $view_library) !== false) {
     echo '<script src="' . base_url() . 'assets/node_modules/ckeditor4/ckeditor.js"></script>';
+}
+?>
+<?php
+if (isset($view_library) && array_search('select2', $view_library) !== false) {
+    echo '<link rel="stylesheet" type="text/css" href="' . base_url(). 'assets/select2/css/select2.min.css" />';
 }
 ?>

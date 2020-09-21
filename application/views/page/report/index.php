@@ -44,7 +44,7 @@
                                                         <div class="row">
                                                             <div class="col-lg-12">
                                                                 <div class="form-group">
-                                                                    <button type="submit" class="btn btn-primary btn-block">Generate Report</button>
+                                                                    <button type="submit" class="btn btn-warning text-white btn-block">Generate Report</button>
                                                                 </div>
                                                             </div>
                                                         </div>

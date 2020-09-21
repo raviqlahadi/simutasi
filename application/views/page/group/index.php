@@ -22,7 +22,7 @@
                                                         <input class="form-control" id="search" type="text" name="search" placeholder="Seach" required>
                                                         <span class="input-group-append">
                                                             <a class="btn btn-info" href="<?php echo $page_url; ?>"><i class="fa fa-sync-alt"></i></a>
-                                                            <button class="btn btn-primary" type="submit">Search</button>
+                                                            <button class="btn btn-warning text-white" type="submit">Search</button>
                                                         </span>
                                                     </div>
                                                 </form>

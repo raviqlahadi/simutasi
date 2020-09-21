@@ -22,7 +22,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-6">
-                                    <button class="btn btn-primary px-4" type="submit">Login</button>
+                                    <button class="btn btn-warning text-white px-4" type="submit">Login</button>
                                 </div>
                                 <!-- <div class="col-6 text-right">
                                     <button class="btn btn-link px-0" type="button">Forgot password?</button>
@@ -31,7 +31,7 @@
                         <?php echo form_close(); ?>
                     </div>
                 </div>
-                <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+                <div class="card text-white bg-warning py-5 d-md-down-none" style="width:44%">
                     <div class="card-body text-center">
                         <div>
                             <h2><?php echo APP_NAME ?></h2>

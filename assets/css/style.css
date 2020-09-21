@@ -6,3 +6,56 @@
 .search-toogle:hover{
     color: #321fdb; 
 }
+.c-app {
+    background-color: #fff!important;
+}
+
+.c-sidebar {
+    background-color: white;
+    -webkit-box-shadow: 2px 0px 2px 0px rgba(0, 0, 0, 0.16);
+    -moz-box-shadow: 2px 0px 2px 0px rgba(0, 0, 0, 0.16);
+    box-shadow: 2px 0px 2px 0px rgba(0, 0, 0, 0.16);
+    
+}
+.c-sidebar-nav-title{
+     color: #3c4b64!important;
+}
+.c-sidebar .c-sidebar-nav-link {
+    color: #3c4b64; 
+}
+
+.c-sidebar .c-sidebar-nav-link .fa{
+    color: #3c4b64;
+}
+
+.c-sidebar-nav-link.c-active{
+    background: rgba(0, 0, 0, .05)!important;
+    color: #f9b115!important;
+}
+
+.c-sidebar-nav-link.c-active .fa {
+    color: #f9b115 !important;
+}
+
+.c-sidebar-minimized .c-sidebar-nav-link:hover {
+    background-color: #f9b115!important;
+    color: #fff!important;
+}
+.c-sidebar .c-sidebar-nav-link:hover {
+    background-color: #f9b115;
+    color: #fff;
+}
+
+.c-sidebar .c-sidebar-nav-link .fa {
+    color: #3c4b64;
+}
+.c-sidebar-brand {
+    background-color: #fff!important;
+    color: #f9b115 !important;
+}
+.c-sidebar-minimizer.c-class-toggler{
+    background-color: #fff!important;
+}
+.c-sidebar-minimizer.c-class-toggler:hover{
+    color: #f9b115 !important;
+}

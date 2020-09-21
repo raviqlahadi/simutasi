@@ -24,8 +24,8 @@
                                                         </p>
                                                     </div>
                                                     <div class="col-12">
-                                                        <a href="<?php echo site_url('profile/edit/' . $user_profile->user_id) ?>" class="btn btn-primary btn-block text-white"><i class="c-icon fa fa-user-edit"></i>&nbsp; Edit Profile</a>
-                                                        <a href="<?php echo site_url('user/password/' . $user_profile->user_id) ?>" class="btn btn-primary btn-block text-white"> <i class="c-icon fa fa-lock"></i>&nbsp; Ganti Password</a>
+                                                        <a href="<?php echo site_url('profile/edit/' . $user_profile->user_id) ?>" class="btn btn-warning text-white btn-block text-white"><i class="c-icon fa fa-user-edit"></i>&nbsp; Edit Profile</a>
+                                                        <a href="<?php echo site_url('user/password/' . $user_profile->user_id) ?>" class="btn btn-warning text-white btn-block text-white"> <i class="c-icon fa fa-lock"></i>&nbsp; Ganti Password</a>
                                                     </div>
                                                 </div>
 

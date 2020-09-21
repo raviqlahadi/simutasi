@@ -15,8 +15,16 @@
                                          <div class="col-12">
                                              <ul class="list-group">
                                                  <li class="list-group-item">
-                                                     <span>Template Laporan Bebas Aset</span>
-                                                     <a href="<?php echo site_url('setting/template_edit')?>" class="float-right text-primary"><i class="fa fa-edit"></i> Edit</a>
+                                                     <span>Template Dokumen Usulan Penghapusan</span>
+                                                     <a href="<?php echo site_url('setting/template_edit/usulan') ?>" class="float-right text-primary"><i class="fa fa-edit"></i> Edit</a>
+                                                 </li>
+                                                 <li class="list-group-item">
+                                                     <span>Template Surat Keterangan</span>
+                                                     <a href="<?php echo site_url('setting/template_edit/keterangan') ?>" class="float-right text-primary"><i class="fa fa-edit"></i> Edit</a>
+                                                 </li>
+                                                 <li class="list-group-item">
+                                                     <span>Lampiran Gambar</span>
+                                                     <a href="<?php echo site_url('setting/template_edit/lampiran_gambar') ?>" class="float-right text-primary"><i class="fa fa-edit"></i> Edit</a>
                                                  </li>
 
                                              </ul>

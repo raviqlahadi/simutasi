@@ -17,6 +17,9 @@ class Asset extends MY_Controller
         $this->load->library('breadcrumbs');
         
         $this->load->model('m_assets');
+        $this->load->model('m_agencies');
+        $this->load->model('m_deletions');
+        $this->load->model('m_documents');
         
         
     }
@@ -36,47 +39,28 @@ class Asset extends MY_Controller
             'asset_code' => 'Kode Aset', 
             'type' => 'Jenis',
             'brand' => "Merk",
+            'police_number' => "Nomor Polisi",
             'agency_name' => 'OPD'
         );
 
         $search = ($this->input->get('search') != null ) ? $this->input->get('search') : false ;        
 
         if($search){
-            $fetch['like'] = array('name'=>array('asset_code','type','brand'), 'key'=>$search);
+            $fetch['like'] = array('name'=>array('asset_code','type','brand','police_number'), 'key'=>$search);
         }
 
-        $fetch['select'] = array('id','asset_code', 'type', 'brand');
+        $fetch['select'] = array('id','asset_code', 'type', 'brand','police_number');
         $fetch['select_join'] = array(
-            'a.name as agency_name',
-            's1.status as asset_status',
-            'o.full_name as officer_name'
-        );
+            'a.name as agency_name');
         $fetch['join'] = array(
             array(
                 "table" => "agencies a",
                 "join" => "left",
                 "on" => "a.id = assets.agency_id"
-            ),
-            array(
-                "table" => "asset_status s1",
-                "join" => "left",
-                "on" => "s1.asset_id = assets.id"
-            ),
-            array(
-                "table" => "asset_status s2",
-                "join" => "left outer",
-                "on" => "(assets.id = s2.asset_id AND 
-                            (s1.date_created < s2.date_created OR 
-                                (s1.date_created  = s2.date_created AND s1.id < s2.id)))"
-            ),
-            array(
-                "table" =>"officers o",
-                "join" => "left",
-                "on" => "o.id = s1.officer_id"
             )
 
         );
-        $fetch['where'] = array('s2.id IS NULL');
+        $fetch['where'] = [];
         $fetch['start'] = $start_record;
         $fetch['limit'] = $limit_per_page;
         if($this->session->level!=1) array_push($fetch['where'], array('assets.agency_id'=> $this->session->agency_id));
@@ -166,115 +150,277 @@ class Asset extends MY_Controller
         redirect($this->url);
     }
 
-    public function status($id)
+    public function deletion($agency_id=null)
     {
-
-        //checkk if id is exist
-        if ($id == null) {
-            $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Anda perlu memilih data yang akan di edit'));
-            redirect($this->url);
-        }else{
-            //get current data
-            $current_data = $this->m_assets->getWhere(array('id' => $id));
-            if (count($current_data) == 0) {
-                $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Data yang akan diedit tidak ditemukan di database'));
-                redirect($this->url);
-            }
-        }
-
         //breadcrumbs config
         $this->breadcrumbs->push('Asset', '/asset');
-        $this->breadcrumbs->push('Status', '/status');
+        $this->breadcrumbs->push('Pemusnahan', '/deletion');
         $this->breadcrumbs->unshift('Admin', '/');
 
+
         //page props
+        $data['table_head'] = array(
+            'asset_code' => 'Kode Aset',
+            'type' => 'Jenis',
+            'brand' => "Merk",
+            'police_number' => "Nomor Polisi",
+            'chassis_number' => "Nomor Rangka",
+            'price' => "Harga",
+            'year_purchased' => "Tahun Pembelian",
+           
+        );
+
         $data['breadcrumbs'] = $this->breadcrumbs->show();
-        $data['page_title'] = '<strong>Update Status</strong> Aset';
-        $data['page_content'] = 'page/asset/status';
+        $data['page_title'] = '<strong>Pemusnahan</strong> Aset';
+        $data['page_content'] = 'page/asset/deletion';
         $data['page_current'] = 'page/asset';
 
+        
+        //asset remove list
+        $fetch['select'] = array('*');
+        $fetch['select_join'] = array('d.id as status_id, d.reason, d.status, d.image, d.depreciation');
+        $fetch['join'] = array(
+            array(
+                "table" => "asset_deletions d",
+                "join" => "join",
+                "on" => "d.asset_id = assets.id"
+            ),
+        );
+        $fetch['where'] = [];
+
+        if($agency_id==null) $agency_id = $this->session->agency_id;
+        
+        array_push($fetch['where'],array('assets.agency_id'=>$agency_id));
+        $data['table_content'] = $this->m_assets->fetch($fetch);
+
         //form props
-        $data['form_title'] = "<strong>Update Status</strong> Aset";
-        $data['form_action'] = site_url($this->url . '/status/'.$id);
+        $data['form_title'] = "<strong>Pemusnahan</strong> Aset";
+        $data['form_action'] = site_url($this->url . '/deletion/');
+
 
         //select option
-        $this->load->model('m_officers');
-        $temp_officers = $this->m_officers->fetch(array('select' => array('id', 'full_name')));
-        $officers = array();
-        foreach ($temp_officers as $key => $value) {
-           array_push($officers, array(
+        $fetch_select['select'] = array('id', 'type', 'asset_code', 'brand', 'police_number');
+        $fetch_select['where'] = [];
+        array_push($fetch_select['where'], array('assets.agency_id' => $agency_id));
+
+        $temp_assets = $this->m_assets->fetch($fetch_select);
+        $assets = array();
+        foreach ($temp_assets as $key => $value) {
+           array_push($assets, array(
                'id'=>$value->id,
-               'name'=>$value->full_name
+               'name'=>$value->asset_code.' '.$value->brand.' - '.$value->type.' - '.$value->police_number
            ));
         }
-        $data['officers_select'] = $officers;
-        $admin_root =
-        array(
-            array(
-                'id' => 'digunakan',
-                'name' => 'Digunakan'
-            ),
-            array(
-                'id' => 'verifikasi',
-                'name' => 'Verifikasi'
-            ),
-            array(
-                'id' => 'kembali',
-                'name' => 'Kembali'
-            )
-        );
-        $admin_opd =
-        array(
-            array(
-                'id' => 'digunakan',
-                'name' => 'Digunakan'
-            ),
-            array(
-                'id' => 'verifikasi',
-                'name' => 'Kembali'
-            )
-        );
-        $data['status_select'] = ($this->session->level==1) ? $admin_root : $admin_opd;
-
-        //check if prev status is exist 
-        $this->load->model('m_status');
-        $prev_status = $this->m_status->fetch(array(
-            'where' => ["asset_id"=>$id],
-            'order' => ['field'=>'date_created','type'=>'ASC'],
-            'limit' => 1));
-
         
-        if(count($prev_status) > 0) $data['form_value'] = (array) $prev_status[0];
+        $data['assets_select'] = $assets;
+        $data['reason_select'] = array(
+            array('id' => 'rusak berat', 'name' => 'rusak berat'),
+            array('id' => 'hilang', 'name' => 'hilang'),
+            array('id' => 'dikuasai pihak lain', 'name' => 'dikuasai pihak lain'),
+            
+        );
+
+        //get document
+        $document = $this->m_documents->getWhere(array('agency_id'=>$agency_id,'status'=>'diajukan'));
+        if(count($document)>0){
+            $data['document'] = $document[0];
+        }
 
         if ($_POST) {
             $this->form_status_validation_rules();
             if ($this->form_validation->run() == FALSE) {
                 $data['form_value'] = $this->input->post();
-                $data['asset_id'] = $id;
                 $data['validation_error'] =  $this->alert->set_alert('warning', validation_errors());
             } else {
                 $post_data = $this->input->post();
-                $post_data['asset_id'] = $id;
-                $this->add_status($post_data);
+
+                $config = $this->upload_config($post_data['asset_id']);
+                $this->load->library('upload', $config);
+                if (!$this->upload->do_upload('image')) {
+                    $error = array('error' => $this->upload->display_errors());
+                    $post_data['image'] = null;
+                    $this->session->set_flashdata('alert', $this->alert->set_alert('danger', json_encode($error)));
+                
+                } else {
+                   $this->session->set_flashdata('alert', $this->alert->set_alert('info','upload berhasil'));
+                   $post_data['image'] = $this->upload->data('file_name'); ;
+                }
+                $this->add_deletion($post_data);
             }
         }
+
+        $data['page_url'] = site_url($this->url);
+        $data['agency_id'] = $agency_id;
+        $data['view_library'] = array('select2');
+        $this->load->view('index', $data);
+    }
+
+    public function deletion_image($id){
+        if($id==null) redirect($this->url . '/deletion');
+       
+        $check_id = $this->m_deletions->getWhere(array('id'=>$id));
+        if(count($check_id)==0) redirect($this->url . '/deletion');
+        $asset_data = $this->m_assets->getWhere(array('id' => $check_id[0]->asset_id));
+
+        //breadcrumbs config
+        $this->breadcrumbs->push('Asset', '/asset');
+        $this->breadcrumbs->push('Pemusnahan', '/asset/deletion');
+        $this->breadcrumbs->push('Upload', '/deletion_image');
+        $this->breadcrumbs->unshift('Admin', '/');
+
+
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['page_title'] = '<strong>Pemusnahan</strong> Aset';
+        $data['page_content'] = 'page/asset/deletion_upload';
+        $data['page_current'] = 'page/asset';
+        $data['table_content'] = $asset_data[0];
+
+        //form props
+        $data['form_title'] = "<strong>Pemusnahan</strong> Aset";
+        $data['form_action'] = site_url($this->url . '/deletion_upload/'.$id);
 
         $data['page_url'] = site_url($this->url);
         $this->load->view('index', $data);
     }
 
+    public function deletion_accept($agency_id){
+        $deletion_data = $this->m_deletions->getWhere(array('agency_id'=>$agency_id, 'status'=>'diajukan'));
+        foreach ($deletion_data as $key => $value) {
+            $data['status'] = 'diperiksa';
+            $this->m_deletions->update($value->id, $data);
+        }
 
-    public function add_status($post_data)
+        $document_data = $this->m_documents->getWhere(array('agency_id' => $agency_id, 'status' => 'diajukan'));
+        foreach ($document_data as $key => $value) {
+            $data['status'] = 'diperiksa';
+            $this->m_documents->update($value->id, $data);
+        }
+        redirect('dashboard');
+    }
+
+    public function add_deletion($post_data)
     {
-        $this->load->model('m_status');
-        if($post_data['officer_id']==0) unset($post_data['officer_id']);
-        $insert = $this->m_status->add($post_data);
+        
+        $post_data['status'] = 'diajukan';
+        
+        $insert = $this->m_deletions->add($post_data);
         if ($insert) {
             $this->session->set_flashdata('alert', $this->alert->set_alert('info', 'Data berhasil di masukan ke database'));
         } else {
             $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Data gagal di masukan ke database'));
         }
-        redirect($this->url);
+        redirect($this->url.'/deletion');
+    }
+    public function deletion_upload($id)
+    {
+        $check_id = $this->m_deletions->getWhere(array('id' => $id))[0];
+        
+        $config = $this->upload_config($check_id->asset_id);
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('image')) {
+            $error = array('error' => $this->upload->display_errors());
+            $this->session->set_flashdata('alert', $this->alert->set_alert('danger', $error['error']));
+            //var_dump($error);
+            redirect($this->url . '/deletion_image/'.$id);
+        } else {
+            
+            $post_data['image'] = $this->upload->data('file_name');
+            $insert = $this->m_deletions->update($id,$post_data);
+            if ($insert) {
+                $this->session->set_flashdata('alert', $this->alert->set_alert('info', 'Data berhasil di update ke database'));
+            } else {
+                $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Data gagal di masukan ke database'));
+            }
+            redirect($this->url . '/deletion');
+        }
+
+        
+    }
+
+    public function deletion_delete($id = null)
+    {
+        $this->load->model('m_status');
+        if ($id != null) {
+            $where_id['id'] = $id;           
+            if ($this->m_deletions->delete($where_id)) {
+                $this->session->set_flashdata('alert', $this->alert->set_alert('info', 'Data berhasil di hapus'));
+            } else {
+                $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Data tidak ditemukan'));
+            }
+        } else {
+            $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Anda perlu memilih data yang akan di hapus'));
+        }
+        redirect($this->url . '/deletion');
+    }
+
+    public function upload_config($file_name){
+        $config['upload_path']          = './uploads/dokumentasi';
+        $config['allowed_types']        = 'gif|jpg|png|jpeg';
+        $config['max_size']             = 5000;
+        $config['max_width']            = 1024;
+        $config['max_height']           = 768;
+        $config['overwrite']           = true;
+        $config['file_name'] = $file_name;
+
+       return $config;
+    }
+
+    public function document()
+    {
+        $agency_id = $this->session->agency_id;
+
+        //breadcrumbs config
+        $this->breadcrumbs->push('Asset', '/asset');
+        $this->breadcrumbs->push('Pemusnahan', '/asset/deletion');
+        $this->breadcrumbs->push('Upload Dokumen', '/upload_document');
+        $this->breadcrumbs->unshift('Admin', '/');
+
+
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['page_title'] = '<strong>Pemusnahan</strong> Aset';
+        $data['page_content'] = 'page/asset/document_upload';
+        $data['page_current'] = 'page/asset';
+
+        //form props
+        $data['form_title'] = "<strong>Upload</strong> Dokumen";
+        $data['form_action'] = site_url($this->url . '/document_upload/'.$agency_id);
+
+        $data['page_url'] = site_url($this->url);
+        $this->load->view('index', $data);
+    }
+
+    public function document_upload($id)
+    {
+
+        $agency_data = $this->m_agencies->getWhere(array('id'=>$id))[0];
+        $date = date('Y-m-d');
+        $file_name = $date. ' SCAN DOCUMENT PENGAJUAN PEMUSNAHAN - '. strtoupper($agency_data->name);
+
+        $config['upload_path']          = './uploads/document';
+        $config['allowed_types']        = 'pdf';
+        $config['max_size']             = 5000;       
+        $config['overwrite']           = true;
+        $config['file_name'] = $file_name;
+
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('userfile')) {
+            $error = array('error' => $this->upload->display_errors());
+            $this->session->set_flashdata('alert', $this->alert->set_alert('danger', $error['error']));
+            //var_dump($error);
+            redirect($this->url . '/document_upload/' . $id);
+        } else {    
+            
+            $post_data['name'] = $this->upload->data('file_name');
+            $post_data['status'] = 'diajukan';
+            $post_data['agency_id'] = $id;
+            $insert = $this->m_documents->add($post_data);
+            if ($insert) {
+                $this->session->set_flashdata('alert', $this->alert->set_alert('info', 'Data berhasil di update ke database'));
+            } else {
+                $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Data gagal di masukan ke database'));
+            }
+            redirect($this->url . '/deletion');
+        }
     }
 
     public function edit($id)
@@ -369,7 +515,9 @@ class Asset extends MY_Controller
     public function form_status_validation_rules()
     {
 
-        $this->form_validation->set_rules('status', 'Status Aset', 'required');
+        $this->form_validation->set_rules('asset_id', 'Aset', 'required');
+        $this->form_validation->set_rules('reason', 'Alasan', 'required');
+        
         
     }
 

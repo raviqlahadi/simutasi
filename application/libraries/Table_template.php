@@ -10,7 +10,7 @@ class Table_template
         }
         return "
             <div class='dropdown'>
-                <button class='btn btn-primary btn-sm dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                <button class='btn btn-warning text-white btn-sm dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                     Action
                 </button>
                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
@@ -43,7 +43,7 @@ class Table_template
                                     </div>
                                     <div class='form-group'>
                                         <button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>
-                                        <button type='submit' class='btn btn-primary'>Save changes</button>
+                                        <button type='submit' class='btn btn-warning text-white'>Save changes</button>
                                     </div>
                                 </form>
                             </div>
@@ -63,7 +63,7 @@ class Table_template
         
         return "
             <div class='dropdown'>
-                <button class='btn btn-primary btn-sm dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                <button class='btn btn-warning text-white btn-sm dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                     Action
                 </button>
                 <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
@@ -87,12 +87,10 @@ class Table_template
             }
             return "
             <div class='dropdown'>
-                <button class='btn btn-primary btn-sm dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                <button class='btn btn-warning text-white btn-sm dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                     Action
                 </button>
-                <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                    <a class='dropdown-item' href='" . $url . "/status/" . $id . "'>Update status</a>
-                    <hr>
+                <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>                 
                     <a class='dropdown-item' href='" . $url . "/detail/" . $id . "'>Detail</a>
                     ". $edit_delete. "
             </div>

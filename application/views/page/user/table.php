@@ -25,7 +25,7 @@
                 echo "<td>" . $value->{$key_head} .  "</td>";
             }
             echo "<td><a href='".site_url()."profile/index/".$value->id. "' class='btn btn-small btn-info text-white'>Profile</a></td>";
-            echo "<td><a href='" . site_url() . "user/password/" . $value->id . "' class='btn btn-small btn-warning text-white'>Password</a></td>";
+            echo "<td><a href='" . site_url() . "user/password/" . $value->id . "' class='btn btn-small btn-warning text-white text-white'>Password</a></td>";
             echo "<td><span class='float-right'>".$this->table_template->action_dropdown($page_url, $value->id)."</span></td>";
             echo "</tr>";
            

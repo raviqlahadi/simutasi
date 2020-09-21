@@ -25,10 +25,11 @@ class Setting extends CI_Controller {
         $this->load->view('index', $data);
     }
 
-    public function template_edit()
+    public function template_edit($template_name=null)
     {
+        if($template_name==null) redirect('setting');
         $data['page_content'] = 'page/setting/template_edit';
-        $template_name = 'bebas_aset';
+        
         $template_data = $this->check_if_template_exist($template_name);
         //initialize breadcrumbs 
         $this->breadcrumbs->push('Setting', '/setting');
@@ -36,11 +37,12 @@ class Setting extends CI_Controller {
         $this->breadcrumbs->unshift('Home', '/');
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         $data['view_library'] = array('ckeditor');
+        $data['form_action']=site_url('setting/template_save/'.$template_name);
         $data['template_data'] = $template_data;
         $this->load->view('index', $data);  
     }
 
-    public function template_save(){
+    public function template_save($type){
         $id = $this->input->post('id');
         $data['template'] = $this->input->post('template');
         
@@ -50,7 +52,7 @@ class Setting extends CI_Controller {
         } else {
             $this->session->set_flashdata('alert', $this->alert->set_alert('danger', 'Data gagal di masukan ke database'));
         }
-        redirect('setting/template_edit');
+        redirect('setting/template_edit/'.$type);
       
     }
 

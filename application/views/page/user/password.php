@@ -8,7 +8,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <?php echo $page_title ?>
-                                    <a class="btn btn-primary float-right text-white" href="<?php echo $page_url; ?>"><i class="fa fa-arrow-circle-left"></i> Back</a>
+                                    <a class="btn btn-warning text-white float-right text-white" href="<?php echo $page_url; ?>"><i class="fa fa-arrow-circle-left"></i> Back</a>
 
                                 </div>
                                 <div class="card-body">

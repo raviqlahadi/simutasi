@@ -50,10 +50,7 @@ class Officer extends MY_Controller
         // ORDER BY s.date_created DESC LIMIT 1) as statusBebas FROM officers o
 
         $fetch['select'] = array('id','nip', 'full_name','position');
-        $fetch['select_join'] = array('a.name as agency_name',
-            '(SELECT s.status FROM asset_status s WHERE s.officer_id=officers.id 
-                ORDER BY s.date_created DESC LIMIT 1) as status_penguasaan'    
-             );
+        $fetch['select_join'] = array('a.name as agency_name');
         $fetch['join'] = array(
             array(
                 "table"=>"agencies a",

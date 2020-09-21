@@ -13,7 +13,7 @@
                                              <?php if ($this->session->flashdata('alert') !== null) echo $this->session->flashdata('alert') ?>
                                          </div>
                                          <div class="col-12">
-                                             <form action="<?php echo site_url('setting/template_save') ?>" method="post"> 
+                                             <form action="<?php echo $form_action ?>" method="post"> 
                                                  <div class="row">
                                                      <div class="col-12">
                                                          <div class="form-group">
@@ -26,7 +26,7 @@
                                                  <div class="row">
                                                      <div class="col-12">
                                                          <div class="form-group">
-                                                             <button type="submit" class="btn btn-primary float-right">Save Template</button>
+                                                             <button type="submit" class="btn btn-warning text-white float-right">Save Template</button>
                                                          </div>
                                                      </div>
                                                  </div>

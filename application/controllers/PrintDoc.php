@@ -2,7 +2,7 @@
     
     defined('BASEPATH') OR exit('No direct script access allowed');
     
-    class PrintDoc extends CI_Controller {
+    class Printdoc extends CI_Controller {
         private $url = 'dashboard';
 
         public function __construct()
@@ -13,33 +13,138 @@
         
         public function index($id=null)
         {
-            if($id==null) redirect(site_url($this->url));
-            $this->load->model('m_templates');
-            $template = $this->m_templates->getWhere(array('name'=>'bebas_aset'))[0]->template;
+            // if($id==null) redirect(site_url($this->url));
+            // $this->load->model('m_templates');
+            // $template = $this->m_templates->getWhere(array('name'=>'bebas_aset'))[0]->template;
 
-            $perihal = $this->input->get('perihal');
-            if($perihal==null) $perihal = '';
+            // $perihal = $this->input->get('perihal');
+            // if($perihal==null) $perihal = '';
 
-            $data['print'] = $template;
-            $data['officer'] = $this->officer_data($id);
-            $data['agency'] = $this->agency_data($data['officer']->agency_id);
-            $data['perihal'] = $perihal;
+            // $data['print'] = $template;
+            // $data['officer'] = $this->officer_data($id);
+            // $data['agency'] = $this->agency_data($data['officer']->agency_id);
+            // $data['perihal'] = $perihal;
 
-            $html = $this->load->view('page/setting/print_placeholder',$data,true);
+            // $html = $this->load->view('page/setting/print_placeholder',$data,true);
             
-            //echo $html;
+            // //echo $html;
 
+            // $this->dompdf->loadHTML($html);
+            // // (Optional) Setup the paper size and orientation
+            // $this->dompdf->setPaper('letter', 'potrait');
+
+            // // Render the HTML as PDF
+            // $this->dompdf->render();
+
+            // // Output the generated PDF (1 = download and 0 = preview)
+            // $this->dompdf->stream("welcome.pdf", array("Attachment" => 0));
+        }
+
+    public function usulan($agency_id=4)
+    {
+        $agency_id = $this->session->agency_id;
+
+        $this->load->model('m_templates');
+        $template = $this->m_templates->getWhere(array('name' => 'usulan'))[0]->template;
+
+        $perihal = $this->input->get('perihal');
+        if ($perihal == null) $perihal = '';
+
+        $data['print'] = $template;
+        $data['agency'] = $this->agency_data($agency_id);
+        $data['perihal'] = $perihal;
+
+        $html = $this->load->view('page/setting/print_placeholder', $data, true);
+
+        //echo $html;
+
+        $this->dompdf->loadHTML($html);
+        // (Optional) Setup the paper size and orientation
+        $this->dompdf->setPaper('letter', 'potrait');
+
+        // Render the HTML as PDF
+        $this->dompdf->render();
+
+        // Output the generated PDF (1 = download and 0 = preview)
+        $this->dompdf->stream("welcome.pdf", array("Attachment" => 0));
+    }
+
+    public function keterangan($agency_id = 4)
+    {
+
+        $agency_id = $this->session->agency_id;
+
+        $this->load->model('m_templates');
+        $template = $this->m_templates->getWhere(array('name' => 'keterangan'))[0]->template;
+
+        $perihal = $this->input->get('perihal');
+        if ($perihal == null) $perihal = '';
+
+        $data['print'] = $template;
+        $data['agency'] = $this->agency_data($agency_id);
+        $data['perihal'] = $perihal;
+
+        $html = $this->load->view('page/setting/print_keterangan', $data, true);
+
+        //echo $html;
+
+        $this->dompdf->loadHTML($html);
+        // (Optional) Setup the paper size and orientation
+        $this->dompdf->setPaper('letter', 'potrait');
+
+        // Render the HTML as PDF
+        $this->dompdf->render();
+
+        // Output the generated PDF (1 = download and 0 = preview)
+        $this->dompdf->stream("welcome.pdf", array("Attachment" => 0));
+    }
+
+    public function lampiran($type='gambar')
+    {
+
+        $agency_id = $this->session->agency_id;
+        $this->load->model('m_assets');
+        $this->load->model('m_templates');
+        $template = $this->m_templates->getWhere(array('name' => 'lampiran_gambar'))[0]->template;
+        $agency_data = $this->agency_data($agency_id);
+
+        $data['print'] = $template;
+        //asset remove list
+        $fetch['select'] = array('*');
+        $fetch['select_join'] = array('d.id as status_id, d.reason, d.status, d.image, d.depreciation');
+        $fetch['join'] = array(
+            array(
+                "table" => "asset_deletions d",
+                "join" => "join",
+                "on" => "d.asset_id = assets.id"
+            ),
+        );
+        $fetch['where'] = [];
+       
+        array_push($fetch['where'], array('assets.agency_id' => $agency_id));
+        $data['table_content'] = $this->m_assets->fetch($fetch);
+       
+
+       
+
+        if($type=='gambar'){
+            //echo $html;
+            $html = $this->load->view('page/setting/print_gambar', $data, true);
             $this->dompdf->loadHTML($html);
             // (Optional) Setup the paper size and orientation
             $this->dompdf->setPaper('letter', 'potrait');
 
             // Render the HTML as PDF
             $this->dompdf->render();
-
+            
             // Output the generated PDF (1 = download and 0 = preview)
-            $this->dompdf->stream("welcome.pdf", array("Attachment" => 0));
+            $this->dompdf->stream("DOKUMENTASI FOTO FISIK BARANG - ".strtoupper($agency_data->name).".pdf", array("Attachment" => 0));
+        }else{
+           $data['agency_data']= $agency_data;
+           $this->load->view('page/setting/print_aset', $data);
+           
         }
-
+    }
        
 
         private function officer_data($id){

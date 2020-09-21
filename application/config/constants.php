@@ -87,9 +87,9 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 //Costume
 
-define('APP_NAME', 'Core Boilerplate');
+define('APP_NAME', 'SITAMPAN');
 define('APP_AUTHOR', 'Raviq Lahadi');
-define('APP_DESC', 'Boilerplate For Rapid Develompment');
+define('APP_DESC', 'Sistem Informasi Tertip Administrasi Penghapusan BMD');
 define('FAVICON_IMAGE', 'assets/favicon.ico');
 define('ICON_IMAGE', 'assets/logo/coreigniter.png');
 define('LOGO_PATH', 'assets/logo_agencies');

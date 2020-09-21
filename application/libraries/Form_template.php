@@ -54,6 +54,28 @@ class Form_template{
         
         ";
     }
+    public function number($label, $name, $placeholder = null, $value = null)
+    {
+        if ($placeholder == null) {
+            $placeholder = 'Enter your ' . $name;
+        }
+        return "
+        <label class='col-form-label' for='" . $name . "'>" . $label . "</label>
+        <input class='form-control' id='" . $name . "' type='number' name='" . $name . "' placeholder='" . $placeholder . "' value='" . $value . "'>
+        
+        
+        ";
+    }
+    public function file($label, $name)
+    {
+       
+        return "
+        <label class='col-form-label' for='" . $name . "'>" . $label . "</label>
+        <input class='form-control' id='" . $name . "' type='file' name='" . $name . "' style='padding:3px'>
+        
+        
+        ";
+    }
 
     public function select($label, $name, $option, $selected = null, $readonly=false)
     {
@@ -61,7 +83,7 @@ class Form_template{
         foreach ($option as $key => $value) {
             if (!is_object($value)) $value = (object) $value;
             $is_selected = ($selected != null && $value->id == $selected) ? 'selected' : '';
-            $select_option = $select_option."<option " . $is_selected . " value='".$value->id."'>".$value->name."</option>";
+            $select_option = $select_option."<option " . $is_selected . " value='".$value->id."'>".ucfirst($value->name)."</option>";
         }
 
         $readonly = ($readonly) ? 'readonly' : '';
@@ -70,6 +92,24 @@ class Form_template{
         return "
         <label class='col-form-label' for='" . $name . "'>" . $label . "</label>
         <select class='form-control' id='select1' name='" . $name . "' ". $readonly .">
+            " . $select_option . "
+        </select>
+        ";
+    }
+    public function select_no_label($name, $option, $selected = null, $readonly = false)
+    {
+        $select_option = "<option value='0'>Please select</option>";
+        foreach ($option as $key => $value) {
+            if (!is_object($value)) $value = (object) $value;
+            $is_selected = ($selected != null && $value->id == $selected) ? 'selected' : '';
+            $select_option = $select_option . "<option " . $is_selected . " value='" . $value->id . "'>" . $value->name . "</option>";
+        }
+
+        $readonly = ($readonly) ? 'readonly' : '';
+
+
+        return "
+        <select class='form-control' id='select1' name='" . $name . "' " . $readonly . ">
             " . $select_option . "
         </select>
         ";
@@ -135,7 +175,7 @@ class Form_template{
              <div class='col-12'>
                 <div class='float-right'>                    
                 <button class='btn btn-outline-primary' type='reset'> Reset</button>    
-                <button class='btn btn btn-primary px-5' type='submit'> Submit</button>
+                <button class='btn btn btn-warning text-white px-5' type='submit'> Submit</button>
                      
                 </div>
             </div>

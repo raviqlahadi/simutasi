@@ -22,3 +22,10 @@
         $this->load->view('page/setting/ckeditor_config');
     }
     ?>
+ <?php
+    if (isset($view_library) && array_search('select2', $view_library) !== false) {
+        echo '<script src="' . base_url() . 'assets/select2/js/select2.js"></script>';
+        $this->load->view('page/setting/select2_config');
+    }
+    
+    ?>
