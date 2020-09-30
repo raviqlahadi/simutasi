@@ -302,6 +302,7 @@ class Asset extends MY_Controller
     {
         
         $post_data['status'] = 'diajukan';
+        $post_data['agency_id'] = $this->session->agency_id ;
         
         $insert = $this->m_deletions->add($post_data);
         if ($insert) {
